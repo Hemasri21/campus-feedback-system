@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Experience Feedback</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+/* PAGE BACKGROUND (NO IMAGE) */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.status {
+  font-size: 14px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* PROGRESS BAR */
+.progress-wrapper {
+  width: 100%;
+  height: 6px;
+  background: #e5e7eb;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #2563eb, #22c55e);
+  transition: width 0.4s ease;
+}
+
+/* CONTENT */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+/* CARD */
+.card {
+  width: 520px;
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* SUBTITLE */
+.subtitle {
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 22px;
+}
+
+/* FORM FIELDS */
+.field {
+  margin-bottom: 16px;
+}
+
+label {
+  font-size: 13px;
+  color: #374151;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 14px;
+}
+
+textarea {
+  resize: none;
+  height: 70px;
+}
+
+/* CATEGORY IMAGE */
+.category-box {
+  margin-top: 10px;
+}
+
+.category-box img {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+/* SLIDER TEXT */
+.slider-text {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2563eb;
+}
+
+/* BUTTON */
+button {
+  margin-top: 22px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right, #2563eb, #22c55e);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.95;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 13px;
+  color: #374151;
+}
+.footer a {
+  color: #2563eb;
+  text-decoration: none;
+  margin: 0 6px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>🎓 Campus Feedback Portal</h1>
+  <div class="status" id="statusText">0% Completed</div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrapper">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="card">
+
+    <div class="subtitle">
+      Your feedback helps us improve teaching quality, facilities, and campus life.
+    </div>
+
+    <!-- FORM -->
+    <form action="/submit" method="POST" id="feedbackForm">
+
+      <div class="field">
+        <label>Roll Number</label>
+        <input name="roll_number" id="roll" required>
+      </div>
+
+      <div class="field">
+        <label>Department</label>
+        <select name="department">
+          <option>CSE</option>
+          <option>ECE</option>
+          <option>EEE</option>
+          <option>MECH</option>
+          <option>CIVIL</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Year of Study</label>
+        <select name="year">
+          <option>1st Year</option>
+          <option>2nd Year</option>
+          <option>3rd Year</option>
+          <option>4th Year</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Feedback Category</label>
+        <select name="category" id="category" onchange="updateCategory(this.value)">
+          <option value="">Select category</option>
+          <option value="teaching">📘 Teaching Quality</option>
+          <option value="lab">🧪 Lab Facilities</option>
+          <option value="infra">🏫 Infrastructure</option>
+          <option value="library">📚 Library</option>
+        </select>
+
+        <div class="category-box">
+          <img id="categoryImage"
+               src="/static/teaching.jpg">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Satisfaction Level</label>
+        <input type="range" min="1" max="5" value="3"
+               name="satisfaction" id="satisfaction"
+               oninput="updateText(this.value)">
+        <div class="slider-text" id="sliderText">Average</div>
+      </div>
+
+      <div class="field">
+        <label>Improvement Suggestion</label>
+        <textarea name="suggestion" id="suggestion"></textarea>
+      </div>
+
+      <button type="submit">Submit Feedback</button>
+
+    </form>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <a href="#">LinkedIn</a> |
+  <a href="#">Portfolio</a>
+</div>
+
+<script>
+const progressBar = document.getElementById("progressBar");
+const statusText = document.getElementById("statusText");
+
+const roll = document.getElementById("roll");
+const category = document.getElementById("category");
+const satisfaction = document.getElementById("satisfaction");
+const suggestion = document.getElementById("suggestion");
+
+function updateProgress() {
+  let filled = 0;
+
+  if (roll.value.trim() !== "") filled++;
+  if (category.value !== "") filled++;
+  if (satisfaction.value !== "3") filled++;
+  if (suggestion.value.trim() !== "") filled++;
+
+  const percent = Math.round((filled / 4) * 100);
+  progressBar.style.width = percent + "%";
+  statusText.innerText = percent + "% Completed";
+}
+
+roll.addEventListener("input", updateProgress);
+category.addEventListener("change", updateProgress);
+satisfaction.addEventListener("input", updateProgress);
+suggestion.addEventListener("input", updateProgress);
+
+function updateText(val) {
+  const map = {
+    1: "Very Poor",
+    2: "Below Average",
+    3: "Average",
+    4: "Good",
+    5: "Excellent"
+  };
+  document.getElementById("sliderText").innerText = map[val];
+}
+
+function updateCategory(val) {
+  const img = document.getElementById("categoryImage");
+  const map = {
+    teaching: "/static/teaching.jpg",
+    lab: "/static/lab.jpg",
+    infra: "/static/infra.jpg",
+    library: "/static/library.jpg"
+  };
+  if (map[val]) img.src = map[val];
+}
+</script>
+
+</body>
+</html>

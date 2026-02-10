@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .count {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .filter {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 15px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Admin Feedback Dashboard</h1>
+
+<div class="count">
+    Total Feedback Records: <strong>{{ feedback|length }}</strong>
+</div>
+
+<div class="filter">
+    <form method="GET" action="/admin">
+        <label>Filter by Year:</label>
+        <select name="year" onchange="this.form.submit()">
+            <option value="">All Years</option>
+            <option value="1st Year" {% if request.args.get('year') == '1st Year' %}selected{% endif %}>1st Year</option>
+            <option value="2nd Year" {% if request.args.get('year') == '2nd Year' %}selected{% endif %}>2nd Year</option>
+            <option value="3rd Year" {% if request.args.get('year') == '3rd Year' %}selected{% endif %}>3rd Year</option>
+            <option value="4th Year" {% if request.args.get('year') == '4th Year' %}selected{% endif %}>4th Year</option>
+        </select>
+    </form>
+</div>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Roll Number</th>
+        <th>Department</th>
+        <th>Year</th>
+        <th>Category</th>
+        <th>Satisfaction</th>
+        <th>Suggestion</th>
+    </tr>
+
+    {% if feedback|length == 0 %}
+    <tr>
+        <td colspan="7" class="no-data">
+            No feedback available for selected year
+        </td>
+    </tr>
+    {% else %}
+        {% for row in feedback %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>{{ row[6] }}</td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+</body>
+</html>
