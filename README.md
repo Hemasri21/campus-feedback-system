@@ -82,5 +82,5 @@ http://127.0.0.1:5000/admin
 ## 📌 Notes
 
 - This project is built as a beginner-friendly full-stack application.
-- Admin authentication is not implemented in this version.
+- Basic Admin authentication using session-based login is implemented.
 - Suitable for fresher-level portfolio and learning Flask fundamentals.
