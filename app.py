@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, redirect, url_for
 import sqlite3
+import os
 from database import create_table, insert_feedback
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 # =========================
 # CREATE TABLE ON START
@@ -43,16 +45,65 @@ def submit():
 
 
 # =========================
-# ADMIN DASHBOARD
+# LOGIN
+# =========================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = sqlite3.connect("feedback.db")
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (username, password)
+        )
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            session["user"] = username
+            return redirect(url_for("admin"))
+        else:
+            return render_template("login.html", error="Invalid credentials")
+
+    return render_template("login.html")
+
+
+# =========================
+# LOGOUT
+# =========================
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
+
+
+# =========================
+# ADMIN DASHBOARD (LOGIN + SEARCH + FILTER)
 # =========================
 @app.route("/admin")
 def admin():
+
+    # 🔒 LOGIN PROTECTION
+    if "user" not in session:
+        return redirect(url_for("login"))
+
     year = request.args.get("year")
+    search = request.args.get("q", "")
 
     conn = sqlite3.connect("feedback.db")
     cursor = conn.cursor()
 
-    if year and year != "":
+    if search:
+        cursor.execute("""
+            SELECT * FROM feedback
+            WHERE roll_number LIKE ? OR category LIKE ? OR suggestion LIKE ?
+        """, (f"%{search}%", f"%{search}%", f"%{search}%"))
+
+    elif year and year != "":
         cursor.execute(
             "SELECT * FROM feedback WHERE year = ?",
             (year,)
@@ -63,7 +114,7 @@ def admin():
     data = cursor.fetchall()
     conn.close()
 
-    return render_template("admin.html", feedback=data)
+    return render_template("admin.html", feedback=data, search=search)
 
 
 # =========================

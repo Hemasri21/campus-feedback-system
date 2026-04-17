@@ -4,10 +4,12 @@ def get_connection():
     conn = sqlite3.connect("feedback.db")
     return conn
 
+
 def create_table():
     conn = get_connection()
     cursor = conn.cursor()
 
+    # FEEDBACK TABLE (existing)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS feedback (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,8 +22,25 @@ def create_table():
     )
     """)
 
+    # ✅ NEW USERS TABLE
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password TEXT,
+        role TEXT DEFAULT 'admin'
+    )
+    """)
+
+    # ✅ DEFAULT ADMIN USER
+    cursor.execute("""
+    INSERT OR IGNORE INTO users (username, password, role)
+    VALUES ('admin', 'admin123', 'admin')
+    """)
+
     conn.commit()
     conn.close()
+
 
 def insert_feedback(roll, dept, year, category, satisfaction, suggestion):
     conn = get_connection()
@@ -35,6 +54,7 @@ def insert_feedback(roll, dept, year, category, satisfaction, suggestion):
 
     conn.commit()
     conn.close()
+
 
 def get_all_feedback():
     conn = get_connection()

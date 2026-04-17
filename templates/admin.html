@@ -62,7 +62,15 @@
     Total Feedback Records: <strong>{{ feedback|length }}</strong>
 </div>
 
-<div class="filter">
+<<div class="filter">
+
+    <!-- 🔍 SEARCH BAR -->
+    <form method="GET" action="/admin" style="margin-bottom:10px;">
+        <input type="text" name="q" value="{{ search }}" placeholder="Search..." style="padding:6px;">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- 📊 YEAR FILTER -->
     <form method="GET" action="/admin">
         <label>Filter by Year:</label>
         <select name="year" onchange="this.form.submit()">
@@ -73,6 +81,7 @@
             <option value="4th Year" {% if request.args.get('year') == '4th Year' %}selected{% endif %}>4th Year</option>
         </select>
     </form>
+
 </div>
 
 <table>
